@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+      body{
+          margin-bottom: 80px;
+      }
+  </style>
+</head>
+<body>
+  <div class="mx-2">
+  <div style="display:flex;align-items:center;justify-content:center;"><h1>Welcome {{user.user_name}}</h1></div>
+  <div > <h3>Top Songs</h3>
+     {% for song in top_songs %}
+     {% if song.song_by.blacklisted==False %}
+       <div class="card" style="width: 250px; height:480px;display: inline-block; margin-right: 10px; margin-bottom: 10px;overflow:hidden">
+        <img src="{{ url_for('static', filename=song.poster) }}" class="card-img-top" alt="..." style="height: 250px;width: 250px;object-fit:cover">
+        <div class="card-body" >
+        <h5 class="card-title">{{song.song_name}}
+           {% if song.flag==True %}
+          <i class="bi bi-explicit-fill"></i>
+          {% endif %}</h5>
+        <p class="card-text">ARTIST: {{song.song_by.artist_name}}</p>
+        <p class="card-text">Rating:{{song.total_rating}}</p>
+        <a href="/song/{{ song.song_id }}" class="card-text btn btn-primary" style="margin-right:150px">Play</a>
+        {% if current_user.creator_id!=song.song_by.artist_id %}
+        <a class="bi bi-heart-fill" style="font-size:25px; color:black" href="/like_song/{{ song.song_id }}"></a> 
+        {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+ 
+<div class=" d-flex justify-content-between ">
+  <h3>Your Playlists</h3>
+  <h3><a href="/create_playlist/{{user.user_id}}" style="margin-right:30px">Create a Playlist</a></h3>
+</div>
+  {% if user.playlists|length==0 %}
+  <div>You Have no Playlists. Create one Now!!</div>
+  {% else %}
+  {% for playlist in user.playlists %}
+  <div class="card" style="width: 250px;height:210px; display: inline-block; margin-right: 10px; margin-bottom: 10px;overflow:hidden">
+    <div class="card-body">
+      <h4 class="card-title">{{playlist.playlist_name}}</h4>
+      <a href="/view_playlist/{{playlist.p_id}}" class="btn btn-secondary">View Playlist</a>
+      <p class="card-text" style="text-align:right"><a href="/delete_playlist/{{playlist.p_id}}" class="btn btn-danger"><i class="bi bi-trash-fill" style="font-size: 1.5em;"></i></a></p>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+
+  <div><h3>Liked Songs</h3></div>
+  {% for song in user.liked_songs %}
+  {% if song.song_by.blacklisted==False %}
+  <div class="card" style="width: 250px;height:500x; display: inline-block; margin-right: 10px; margin-bottom: 10px;overflow:hidden">
+    <img src="{{ url_for('static', filename=song.poster) }}" class="card-img-top" alt="...">
+    <div class="card-body" >
+    <h5 class="card-title">{{song.song_name}} {% if song.flag==True %}
+      <i class="bi bi-explicit-fill"></i>
+      {% endif %}</h5>
+    <p class="card-text">ARTIST: {{song.song_by.artist_name}}</p>
+    <p class="card-text">Rating:{{song.total_rating}}</p>
+    <a href="/song/{{song.song_id}}" class="card-text btn btn-primary" style="margin-right:150px">Play</a>
+    <a class="bi bi-heart-fill" style="font-size:25px" href="/unlike_song/{{ song.song_id }}"></a> 
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+
+
+
+  <nav class="navbar fixed-bottom bg-dark mb-2 h2" style= "padding: 10px ;bottom: 0; width: 100%;">
+    <div class="container-fluid">
+    <a href="/profile"><i class="bi bi-person-circle" style="color:white;font-size:35px"></i></a>
+    <a href="/search"><i class="bi bi-search navbar-brand" style="color:white; font-size:35px"></i></a>
+    {% if user.creator_id is not none %} 
+    <a href="/creator_page/{{user.creator_id}}" style="color:white">Creator Mode<i class="bi bi-person-check"></i></a>
+    {% else %}
+    <a href="/creator_registration/{{user.user_id}}" style="color:white">Register as a creator<i class="bi bi-person"></i></a>
+    {% endif %}
+    <a href="/logout"><i class="bi bi-box-arrow-in-left" style="color:white; font-size:35px"></i></a>
+    </div>
+  </nav>
+</body>
+</html>
+

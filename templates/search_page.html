@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body{
+            margin-bottom: 80px;
+        }
+    </style>
+<body>
+    <nav class="navbar bg-body-tertiary" style= "padding: 20px ;bottom: 0; width: 100%;">
+        <div class="container-fluid">
+          <a class="navbar-brand"><h3>What are you looking for?</h3></a>
+          <form class="d-flex" role="search" action="/search" method="POST">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_value">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+    <br>
+    <div class="mx-2">
+    <div style="display:flex;align-items:center;justify-content:center;"><h2>Search Results</h2></div>
+    <br>
+    {% if songs is none and artists is none and albums is none %}
+    <div style="display:flex;align-items:center;justify-content:center;"><h4>Type in a search value</h4></div>
+    <div><h4>Browse All</h4></div>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h5>Songs</h5>
+        <a style="font-size:20px;margin-right:40px" href="/show_all?parameter=songs">Show All</a>
+      </div>
+      {% for song in all_songs %}
+      {% if song.song_by.blacklisted==False %}
+      <div class="card"  style="width: 13rem;height: 70px;display: inline-block;overflow:hidden">
+        <div class="card-body">
+          <a  href="/song/{{song.song_id}}"><h5 class="card-title">{{song.song_name}}{% if song.flag==True %}
+            <i class="bi bi-explicit-fill" style="color:black"></i>
+            {% endif %}</h5></a>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <br>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h5>Artists</h5>
+        <a style="font-size:20px;margin-right:40px" href="/show_all?parameter=artists">Show All</a>
+      </div>
+      {% for artist in all_artists %}
+      {% if artist.blacklisted==False %}
+      <div class="card"  style="width: 13rem; display: inline-block;overflow:hidden;height: 70px;">
+        <div class="card-body">
+          <a href="/artist/{{artist.artist_id}}"><h5 class="card-title">{{artist.artist_name}}</h5></a>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <br>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h5>Albums</h5>
+        <a style="font-size:20px;margin-right:40px" href="/show_all?parameter=albums">Show All</a>
+      </div>
+      {% for album in all_albums %}
+      {% if album.owner.blacklisted==False %}
+      <div class="card"  style="width: 13rem; display: inline-block;overflow:hidden;height: 70px;">
+        <div class="card-body">
+          <a href="/album/{{album.album_id}}"><h5 class="card-title">{{album.album_name}}</h5></a>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <br>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h5>Genres</h5>
+      </div>
+      {% for genre in all_genres %}
+      <div class="card"  style="width: 13rem; display: inline-block;overflow:hidden;height: 70px;">
+        <div class="card-body">
+          <a href="/genre/{{genre}}"><h5 class="card-title">{{genre}}</h5></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% elif songs|length==0 and artists|length==0 and albums|length==0 %}
+    <div style="display:flex;align-items:center;justify-content:center;"><h4>Sorry, did not find what you were looking for. Try Again</h4></div>
+    
+    {% else %}
+    <h3>Song Results</h3>
+    {% if songs|length!=0 %}
+    {% for song in songs %}
+    {% if song.song_by.blacklisted==False %}
+    <div class="card">
+        <div class="card-body">
+            <a href="/song/{{song.song_id}}">{{song.song_name}}</a>
+            {% if song.flag==True %}
+            <i class="bi bi-explicit-fill"></i>
+        {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+    {%else%}
+    No Songs found.
+    <br><br>
+    {% endif %} 
+    <h3>Artist Results</h3>
+    {% if artists|length!=0 %}
+    {% for artist in artists %}
+    {% if artist.blacklisted==False %}
+    <div class="card">
+        <div class="card-body">
+          <a href="/artist/{{artist.artist_id}}">{{artist.artist_name}}</a>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+    {%else%}
+    No Artists found.
+    <br><br>
+    {% endif %}
+    
+    <h3>Album Results</h3>
+    {% if albums|length!=0 %}
+    {% for album in albums %}
+    {% if album.owner.blacklisted==False %}
+    <div class="card">
+        <div class="card-body">
+            <a href="/album/{{album.album_id}}">{{album.album_name}}</a>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %} 
+    {%else%}
+    No Albums found.
+    {% endif %}
+    {% endif %}
+
+    </div>
+    <nav class="navbar fixed-bottom bg-dark mb-2 h2" style= "padding: 10px ;bottom: 0; width: 100%;">
+        <div class="container-fluid">
+    
+        <a href="/profile"><i class="bi bi-person-circle" style="color:white;font-size:35px"></i></a>
+        <a href="/search"><i class="bi bi-search navbar-brand" style="color:white; font-size:35px"></i></a>
+        <a href="/homepage/{{current_user.user_id}}" style="color:white; font-size:35px"><i class="bi bi-house"></i></a>
+        {% if current_user.creator_id is not none %} 
+        <a href="/creator_page/{{current_user.creator_id}}" style="color:white">Creator Mode<i class="bi bi-person-check"></i></a>
+        {% else %}
+        <a href="/creator_registration/{{current_user.user_id}}" style="color:white">Register as a creator<i class="bi bi-person"></i></a>
+        {% endif %}
+        <a href="/logout"><i class="bi bi-box-arrow-in-left" style="color:white; font-size:35px"></i></a>
+        </div>
+      </nav>
+</body>
+</html>

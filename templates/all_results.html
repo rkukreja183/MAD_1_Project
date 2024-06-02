@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body{
+            margin-bottom: 80px;
+        }
+    </style>
+    <title>Meloverse</title>
+</head>
+<body>
+  <div class="mx-2">
+    {% if parameter=='songs' %}
+    <div><h2>All songs</h2></div>
+    {% for song in all_results %}
+    {% if song.song_by.blacklisted==False %}
+      <div class="card container-fluid" >
+        <div class="card-body">
+          <div class="row">
+          <div class="col-9">{{song.song_name}}{% if song.flag==True %}
+            <i class="bi bi-explicit-fill"></i>
+            {% endif %}</div>
+            <div class="col-3"><a href="/song/{{song.song_id}}"><i class="bi bi-play-circle"></i></a></div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+
+    {% elif parameter=='artists' %}  
+    <div><h2>All artists</h2></div>
+    {% for artist in all_results %}
+    {% if artist.blacklisted==False %}
+    <div class="card container-fluid">
+        <div class="card-body">
+          <div class="row">
+          <div class="col-9">{{artist.artist_name}}</div>
+              <div class="col-3"><a href="/artist/{{artist.artist_id}}" class="btn btn-success">View</a></div>
+           </div> 
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+    {% else %}
+    <div><h2>All albums</h2></div> 
+    {% for album in all_results %}
+    {% if album.owner.blacklisted==False %}
+    <div class="card container-fluid">
+      <div class="card-body">
+        <div class="row">
+        <div class="col-9">{{album.album_name}}</div>
+            <div class="col-3"><a href="/album/{{album.album_id}}" class="btn btn-success">View</a></div>
+         </div> 
+      </div>
+    </div>
+    {% endif %}
+      {% endfor %}
+    {% endif %}  
+  </div>
+
+    <nav class="navbar fixed-bottom bg-dark mb-2 h2" style= "padding: 10px ;bottom: 0; width: 100%;">
+        <div class="container-fluid">
+    
+        <a href="/profile"><i class="bi bi-person-circle" style="color:white;font-size:35px"></i></a>
+        <a href="/search"><i class="bi bi-search navbar-brand" style="color:white; font-size:35px"></i></a>
+        <a href="/homepage/{{current_user.user_id}}" style="color:white; font-size:35px"><i class="bi bi-house"></i></a>
+        {% if current_user.creator_id is not none %} 
+        <a href="/creator_page/{{current_user.creator_id}}" style="color:white">Creator Mode<i class="bi bi-person-check"></i></a>
+        {% else %}
+        <a href="/creator_registration/{{current_user.user_id}}" style="color:white">Register as a creator<i class="bi bi-person"></i></a>
+        {% endif %}
+        <a href="/logout"><i class="bi bi-box-arrow-in-left" style="color:white; font-size:35px"></i></a>
+        </div>
+      </nav>
+          
+</body>
+</html>

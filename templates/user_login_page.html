@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh; ">
+        <div>
+      <h2>Login</h2>
+      <form action="/login" method="POST" class="form-control">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="user_name" required>
+          {% if status1==False %}
+          <div style="color:red">User-name does not exist. Please check or register
+            <br><a href="/register">Go to Registration Page</a>
+          </div>
+          {% endif %}
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" name="password" required minlength="8">
+          {% if status2==False %}
+            <div style="color:red">Invalid Password. Try again.</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <div><a href="/">Go Back</a></div>
+      </form>
+      </div>
+      </div> 
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <style>
+        .card{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <nav class="navbar bg-dark">
+            <form class="container-fluid">
+            <span style="color:white;font-size:20px">Adminstrator</span>
+            <div class="ml-auto">
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Go To
+                    </a>
+                  
+                    <ul class="dropdown-menu">
+                      <li> <a href="{{ url_for('admin_dashboard',p='')}}" class="dropdown-item">Dashboard</a></li>
+                      <li><a class="dropdown-item" href="/show_admin?parameter=songs">All Songs</a></li>
+                      <li><a class="dropdown-item" href="/show_admin?parameter=albums">All Albums</a></li>
+                      <li><a class="dropdown-item" href="/show_admin?parameter=creators">All Creators</a></li>
+                    </ul>
+                  </div>
+            </div>
+            </form>
+        </nav>
+
+
+        <div class="card" >
+            <div class="card-header">
+                <h3>{{song.song_name}} by {{song.song_by.artist_name}}</h3>
+                    <p style="margin-left:20px">Total Rating: {{song.total_rating}}</p>
+            </div>
+            <div class="card-body">
+            {% for line in song.lyrics.split('\n') %}  
+            <p class="card-text">{{line}} </p>
+            {% endfor %}
+                <audio src="{{ song_file }}" controls></audio>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar bg-dark">
+        <form class="container-fluid" action="/search_by_admin" method="POST">
+           <span style="color:white;font-size:20px">Adminstrator</span>
+          <div class="ml-auto d-flex">
+            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="admin_search">
+           <button class="btn btn-outline-success mr-3" type="submit">Search</button>
+           <div class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Go To
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li> <a href="{{ url_for('admin_dashboard',p='')}}" class="dropdown-item">Dashboard</a></li>
+              <li><a class="dropdown-item" href="/show_admin?parameter=songs">All Songs</a></li>
+              <li><a class="dropdown-item" href="/show_admin?parameter=albums">All Albums</a></li>
+              <li><a class="dropdown-item" href="/show_admin?parameter=creators">All Creators</a></li>
+            </ul>
+          </div>
+          </div>
+        </form>
+      </nav>
+      
+      {% if parameter=="songs" %}
+      <div class="container-fluid">
+        <h3>All Songs</h3>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Song Name</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Album Name</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for song in results %}
+              <tr>
+                <td>{{song.song_name}}</td>
+                <td>{{song.song_by.artist_name}}</td>
+                {% if song.album is not none %}
+                <td>{{song.from_album.album_name}}</td>
+                {% else %}
+                <td>Single</td>
+                {% endif %}
+                <td>
+                    <a href="/admin_play_song/{{song.song_id}}" class="btn-sm btn btn btn-primary">Play</a>
+                    {% if song.flag==False %}
+                    <a href="/flag_song/{{song.song_id}}" class="btn-sm btn btn btn-warning" type="button">Flag</a>
+                    {% else %}
+                    <a href="/unflag_song/{{song.song_id}}" class="btn-sm btn btn btn-success" type="button">Unflag</a>
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+
+
+      {% elif parameter=="albums" %}
+      <div class="container-fluid">
+        <h3>All Albums</h3>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Album Name</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Number of Songs</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for album in results %}
+              <tr>
+                <td>{{album.album_name}}</td>
+                <td>{{album.owner.artist_name}}</td>
+                <td>{{album.songs|length}}</td>
+                <td>
+                  <a href="/admin_view_album/{{album.album_id}}" class="btn-sm btn btn btn-primary">View</a>
+                    {% if album.flag==False %}
+                    <a href="/flag_album/{{album.album_id}}" class="btn-sm btn btn btn-warning" type="button">Flag</a>
+                    {% else %}
+                    <a href="/unflag_album/{{album.album_id}}" class="btn-sm btn btn btn-success" type="button">Unflag</a>
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+
+      {% else %}
+      <div class="container-fluid">
+        <h3>All Creators</h3>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Uploads</th>
+                <th scope="col">Albums</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for artist in results %}
+              <tr>
+                <td>{{artist.artist_name}}</td>
+                <td>{{artist.songs|length}}</td>
+                <td>{{artist.albums|length}}</td>
+                <td>
+                  <a href="/admin_view_artist/{{artist.artist_id}}" class="btn-sm btn btn btn-primary">View</a>
+                    {% if artist.blacklisted==False %}
+                    <a href="/blacklist/{{artist.artist_id}}" class="btn-sm btn btn btn-danger" type="button">Blacklist</a>
+                    {% else %}
+                    <a href="/deblacklist/{{artist.artist_id}}" class="btn-sm btn btn btn-warning" type="button">Whitelist</a>
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+      {% endif %}
+</body>
+</html>

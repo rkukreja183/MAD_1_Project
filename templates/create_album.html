@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meloverse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body{
+            margin-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/create_album/{{artist.artist_id}}" method="POST" >
+        <label for="album_name">Name your Album:</label>
+        <input type="text" id="album_name" name="album_name" required> 
+        {% if status==False %}
+        <div style="color:red">Album exists. Please choose a different album name</div>
+        {% endif %}
+        <br><br>
+            {% for song in artist_songs %}
+            <nav class="navbar navbar-expand-lg bg-body-tertiary" style="border: 1px solid #000;">
+                <div class="container-md">
+                  <input type="checkbox" name="album_songs" value="{{ song.song_id }}" id="{{ song }}">
+                  <label for="{{ song }}" style="margin-left: 10px;">{{song.song_name}} 
+                    {% if song.album is none %} (Single) {% else %} (Album: {{song.from_album.album_name}}) {% endif %}
+                  </label>
+                </div>
+              </nav>
+            {% endfor %}
+            <br>
+        <input type="submit"class="btn btn-success" value="Create Album">
+
+        <nav class="navbar fixed-bottom bg-dark mb-2 h2" style= "padding: 10px ;bottom: 0; width: 100%;">
+          <div class="container-fluid">
+          <a href="/profile"><i class="bi bi-person-circle" style="color:white;font-size:35px"></i></a>
+          <a href="/search"><i class="bi bi-search navbar-brand" style="color:white; font-size:35px"></i></a>
+          <a href="/homepage/{{current_user.user_id}}" style="color:white; font-size:35px"><i class="bi bi-house"></i></a>
+          {% if current_user.creator_id is not none %} 
+          <a href="/creator_page/{{current_user.creator_id}}" style="color:white">Creator Mode<i class="bi bi-person-check"></i></a>
+          {% else %}
+          <a href="/creator_registration/{{current_user.user_id}}" style="color:white">Register as a creator<i class="bi bi-person"></i></a>
+          {% endif %}
+          <a href="/logout"><i class="bi bi-box-arrow-in-left" style="color:white; font-size:35px"></i></a>
+          </div>
+        </nav> 
+</body>
+</html>

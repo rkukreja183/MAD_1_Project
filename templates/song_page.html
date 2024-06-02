@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Meloverse</title>
+    <style>
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 80px;
+        };
+        .inner_custom{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            text-align:justify;
+            max-width: 400px;
+            margin:0 auto
+        }
+        .outer_custom{
+            max-height:37.5vh;
+            overflow-y:auto
+        }
+    </style>
+</head>
+<body>
+    <div class="flex-column">
+    <div class="card">
+        <div class="card-header">
+            <img src="{{ poster_file }}" class="card-img-top" alt="..." style="object-fit:cover;width:400px;height:300px">
+            <h3>{{song.song_name}} by {{song.song_by.artist_name}}{% if song.flag==True %}
+                <i class="bi bi-explicit-fill"></i>
+                {% endif %}</h3>
+            <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb"> <ol class="breadcrumb">
+                {% if current_user.user_id!=song.song_by.artist_user_id %}
+                {% if song in current_user.liked_songs%}
+                <li class="breadcrumb-item"><a class="bi bi-heart-fill" style="font-size:25px;" href="/unlike_song/{{song.song_id}}"></a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a class="bi bi-heart-fill" style="font-size:25px;color:black" href="/like_song/{{song.song_id}}"></a></li>
+                {% endif %}
+                {% endif %}
+                <li class="breadcrumb-item"  style="margin-left:20px">Total Rating: {{song.total_rating}}</li>
+                {% if current_user.creator_id!=song.song_by.artist_id %}
+                <li class="breadcrumb-item" style="margin-left:20px">Rate: 
+                    <form action="/rate_song/{{song.song_id}}", method="POST">
+                        <input type="submit" name="rating" id="rating" value="1">
+                   
+                        <input type="submit" name="rating" id="rating" value="2">
+                   
+                        <input type="submit" name="rating" id="rating" value="3">
+                   
+                        <input type="submit" name="rating" id="rating" value="4">
+                   
+                        <input type="submit" name="rating" id="rating" value="5">
+                     </form>      
+                 </li>
+              </ol></nav>
+              {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="text-center"><audio src="{{ song_file }}" controls style="width:100%"></audio></div>
+            <div class="outer_custom">
+                <div class="inner_custom">
+                {% for line in song.lyrics.split('\n') %}  
+                <p class="card-text">{{line}} </p>
+                {% endfor %}
+                </div>
+            </div>
+         </div>
+    </div>
+    </div>
+    <nav class="navbar fixed-bottom bg-dark mb-2 h2" style= "padding: 10px ;bottom: 0; width: 100%;">
+        <div class="container-fluid">
+        <a href="/profile"><i class="bi bi-person-circle" style="color:white;font-size:35px"></i></a>
+        <a href="/search"><i class="bi bi-search navbar-brand" style="color:white; font-size:35px"></i></a>
+        <a href="/homepage/{{current_user.user_id}}" style="color:white; font-size:35px"><i class="bi bi-house"></i></a>
+        {% if current_user.creator_id is not none %} 
+        <a href="/creator_page/{{current_user.creator_id}}" style="color:white">Creator Mode<i class="bi bi-person-check"></i></a>
+        {% else %}
+        <a href="/creator_registration/{{current_user.user_id}}" style="color:white">Register as a creator<i class="bi bi-person"></i></a>
+        {% endif %}
+        <a href="/logout"><i class="bi bi-box-arrow-in-left" style="color:white; font-size:35px"></i></a>
+        </div>
+      </nav>
+</body>
+</html>
